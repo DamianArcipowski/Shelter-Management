@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Damian Arcipowki, Dawid Lewandowski">
     <title>Schronisko</title>
+    <link rel="icon" type="image/x-icon" href="images/paws.ico">
     <link rel="stylesheet" type="text/css" href="../css/login.css">
+    <script src="js/login.js" defer></script>
 </head>
 <body>
     <div class="login-container">
@@ -24,9 +26,10 @@
                 </div>
                 <button type="submit" class="btn-login">Zaloguj</button>
                 <div class="extra-info">
-                    <a href="#" onclick="alert('Skontaktuj się z administratorem'); return false;">Zapomniałeś hasła?</a>
+                    <a href="#" id="reset-password">Zapomniałeś hasła?</a>
                 </div>
             </form>
+            <p class="error-field"></p>
         </div>
     </div>
 </body>

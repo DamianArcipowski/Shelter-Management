@@ -122,6 +122,12 @@ body {
     text-decoration: underline;
 }
 
+.error-field {
+    display: none;
+    color: #f32121;
+    margin-top: 1em;
+}
+
 @media (max-width: 500px) {
     .login-container {
         border-width: 2px;
