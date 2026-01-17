@@ -1,4 +1,4 @@
-CREATE TABLE animals (
+CREATE TABLE IF NOT EXISTS animals (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     species VARCHAR(100) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE animals (
     status ENUM('dostepne', 'zaadoptowane', 'w_trakcie_adopcji', 'kwarantanna', 'niedostepne') NOT NULL
 );
 
-CREATE TABLE adoption_candidates (
+CREATE TABLE IF NOT EXISTS adoption_candidates (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
     surname VARCHAR(100) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE adoption_candidates (
     sex ENUM('mezczyzna', 'kobieta')
 );
 
-CREATE TABLE adoption_tickets (
+CREATE TABLE IF NOT EXISTS adoption_tickets (
     id INT PRIMARY KEY AUTO_INCREMENT,
     creation_date DATE NOT NULL,
     animal_preferences TEXT,
@@ -32,7 +32,7 @@ CREATE TABLE adoption_tickets (
     FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE SET NULL
 );
 
-CREATE TABLE adoption_contracts (
+CREATE TABLE IF NOT EXISTS adoption_contracts (
     id INT PRIMARY KEY AUTO_INCREMENT,
     creation_date DATE NOT NULL,
     content TEXT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE adoption_contracts (
     FOREIGN KEY (ticket_id) REFERENCES adoption_tickets(id) ON DELETE CASCADE
 );
 
-CREATE TABLE office_workers (
+CREATE TABLE IF NOT EXISTS office_workers (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     surname VARCHAR(100) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE office_workers (
     phone_number VARCHAR(20)
 );
 
-CREATE TABLE office_worker_to_ticket (
+CREATE TABLE IF NOT EXISTS office_worker_to_ticket (
     employee_id INT NOT NULL,
     ticket_id INT NOT NULL,
     assignment_date DATETIME DEFAULT CURRENT_TIMESTAMP,

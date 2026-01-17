@@ -1,4 +1,4 @@
-CREATE TABLE warehouse (
+CREATE TABLE IF NOT EXISTS warehouse (
     id INT PRIMARY KEY DEFAULT 1,
     warehouse_name VARCHAR(100) NOT NULL DEFAULT 'Magazyn Główny',
     location VARCHAR(255),
@@ -8,7 +8,7 @@ CREATE TABLE warehouse (
 
 INSERT INTO warehouse (id, warehouse_name, location) VALUES (1, 'Magazyn Główny', 'Olsztyn, WMII');
 
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     expiration_date DATE,
@@ -20,7 +20,7 @@ CREATE TABLE products (
     CHECK (amount >= 0)
 );
 
-CREATE TABLE warehouse_reports (
+CREATE TABLE IF NOT EXISTS warehouse_reports (
     id INT PRIMARY KEY AUTO_INCREMENT,
     creation_date DATE NOT NULL,
     quarter INT NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE warehouse_reports (
     CHECK (year >= 2025 AND year <= 2050)
 );
 
-CREATE TABLE warehouse_report_products (
+CREATE TABLE IF NOT EXISTS warehouse_report_products (
     report_id INT NOT NULL,
     product_id INT NOT NULL,
     product_amount DECIMAL(10,2) NOT NULL,
@@ -51,10 +51,10 @@ CREATE TABLE IF NOT EXISTS warehouse_workers (
     phone_number VARCHAR(20),
     hire_date DATE,
     warehouse_id INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (warehouse_id) REFERENCES Magazyn(id) ON DELETE CASCADE
+    FOREIGN KEY (warehouse_id) REFERENCES warehouse(id) ON DELETE CASCADE
 );
 
-CREATE TABLE warehouse_operations_history (
+CREATE TABLE IF NOT EXISTS warehouse_operations_history (
     id INT PRIMARY KEY AUTO_INCREMENT,
     date DATETIME DEFAULT CURRENT_TIMESTAMP,
     type ENUM('przyjecie', 'wydanie', 'zwrot', 'korekta', 'usuniecie') NOT NULL,

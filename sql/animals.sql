@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS animals (
     status ENUM('dostepne', 'zaadoptowane', 'w_trakcie_adopcji', 'kwarantanna', 'niedostepne') NOT NULL
 );
 
-CREATE TABLE vets (
+CREATE TABLE IF NOT EXISTS vets (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
     surname VARCHAR(100) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE vets (
     position ENUM('opiekun', 'weterynarz', 'pracownik_biurowy', 'magazynier', 'kierownik') NOT NULL DEFAULT 'weterynarz'
 );
 
-CREATE TABLE animal_records (
+CREATE TABLE IF NOT EXISTS animal_records (
     id INT PRIMARY KEY AUTO_INCREMENT,
     creation_date DATE NOT NULL,
     medical_history TEXT,
@@ -29,7 +29,7 @@ CREATE TABLE animal_records (
     FOREIGN KEY (animal_id) REFERENCES animals(id) ON DELETE CASCADE
 );
 
-CREATE TABLE medical_entries (
+CREATE TABLE IF NOT EXISTS medical_entries (
     id INT PRIMARY KEY AUTO_INCREMENT,
     creation_date DATE NOT NULL,
     content TEXT NOT NULL,

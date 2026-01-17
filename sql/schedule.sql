@@ -8,20 +8,20 @@ CREATE TABLE IF NOT EXISTS employees (
     position ENUM('opiekun', 'weterynarz', 'pracownik_biurowy', 'magazynier', 'kierownik') NOT NULL
 );
 
-CREATE TABLE schedule (
+CREATE TABLE IF NOT EXISTS schedule (
     id INT PRIMARY KEY AUTO_INCREMENT,
     date_from DATE NOT NULL,
     date_to DATE NOT NULL,
     CHECK (date_to >= date_from)
 );
 
-CREATE TABLE scheduled_tasks (
+CREATE TABLE IF NOT EXISTS scheduled_tasks (
     id INT PRIMARY KEY AUTO_INCREMENT,
     date DATE NOT NULL,
     content TEXT NOT NULL,
     position ENUM('opiekun', 'weterynarz', 'pracownik_biurowy', 'magazynier', 'kierownik') NOT NULL,
     employee_id INT NOT NULL,
     schedule_id INT NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES Pracownik(id) ON DELETE CASCADE,
-    FOREIGN KEY (schedule_id) REFERENCES Harmonogram(id) ON DELETE CASCADE
+    FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE,
+    FOREIGN KEY (schedule_id) REFERENCES schedule(id) ON DELETE CASCADE
 );
