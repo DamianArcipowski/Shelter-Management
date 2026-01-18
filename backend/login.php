@@ -3,7 +3,7 @@
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-require_once '../database/connection.php';
+require_once 'connection.php';
 
 $sql = 'SELECT password, position FROM employees WHERE login = ?';
 $stmt = $conn->prepare($sql);

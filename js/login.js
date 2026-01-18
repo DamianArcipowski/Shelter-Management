@@ -9,6 +9,7 @@ function displayLoginError() {
     const urlParams = new URLSearchParams(window.location.search);
     const userExist = urlParams.get('user_exist');
     const passwordMatch = urlParams.get('password_match');
+    const pageAccess = urlParams.get('access');
 
     if (userExist == 'false') {
         errorField.style.display = 'block';
@@ -16,6 +17,9 @@ function displayLoginError() {
     } else if (passwordMatch == 'false') {
         errorField.style.display = 'block';
         errorField.textContent = 'Wprowadzono niepoprawne hasło! Spróbuj ponownie.'
+    } else if (pageAccess == 'false') {
+        errorField.style.display = 'block';
+        errorField.textContent = 'Nie posiadasz uprawnień do wyświetlenia tej strony!'
     }
 }
 

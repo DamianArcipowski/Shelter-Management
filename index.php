@@ -15,7 +15,7 @@
             <h1>🐾 Schronisko</h1>
         </div>
         <div class="form-content">
-            <form id="loginForm" method="POST" action="database/login.php">
+            <form id="loginForm" method="POST" action="backend/login.php">
                 <div class="form-group">
                     <label for="username">Login użytkownika</label>
                     <input type="text" id="username" name="username" placeholder="tnowak" required>
