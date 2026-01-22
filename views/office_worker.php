@@ -3,9 +3,9 @@
 session_start();
 if (!isset($_SESSION['signed_in']) || $_SESSION['role'] != 'pracownik_biurowy') {
     header('Location: ../index.php?access=false');
-    exit();
+    exit(); 
 }
-
+$currentPage = $_GET['page'] ?? 'animals';
 ?>
 
 <!DOCTYPE html>
@@ -23,108 +23,14 @@ if (!isset($_SESSION['signed_in']) || $_SESSION['role'] != 'pracownik_biurowy') 
 <body>
     <div class="container">
         <nav class="nav-tabs">
-            <button class="nav-tab">Plan</button>
-            <button class="nav-tab">Adopcja</button>
-            <button class="nav-tab active">Zwierzęta</button>
-            <button class="nav-tab logout-btn">Wyloguj</button>
-        </nav>
+    <a href="?page=schedule" class="nav-tab <?= ($currentPage === 'schedule') ? 'active' : '' ?>">Plan</a>
+    <a href="?page=adoption" class="nav-tab <?= ($currentPage === 'adoption') ? 'active' : '' ?>">Adopcja</a>
+    <a href="?page=animals"  class="nav-tab <?= ($currentPage === 'animals') ? 'active' : '' ?>">Zwierzęta</a>
+    <a class="nav-tab logout-btn">Wyloguj</a>
+</nav>
         <div class="content">
             <div class="layout">
-                <aside class="sidebar">
-                    <div class="sidebar-section">
-                        <button class="sidebar-btn" id="create-animal-btn">Dodaj zwierzę</button>
-                    </div>
-                </aside>
-                <main>
-                    <div class="search-section">
-                        <div class="search-grid">
-                            <div class="search-group">
-                                <label>Szukaj po nazwie</label>
-                                <input type="text" placeholder="Nazwa" id="search-name">
-                            </div>
-                            <button class="search-btn" id="search-name-btn">Szukaj</button>
-                            <div class="search-group">
-                                <label>Szukaj po id</label>
-                                <input type="text" placeholder="ID" id="search-id">
-                            </div>
-                            <button class="search-btn" id="search-id-btn">Szukaj</button>
-                            <div class="search-group">
-                                <label>Szukaj po gatunku</label>
-                                <select id="filter-species">
-                                    <option value="">Wybierz</option>
-                                    <option value="Kot">Kot</option>
-                                    <option value="Pies">Pies</option>
-                                    <option value="Królik">Królik</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="success-notification"></p>
-                    <div class="form-content hidden">
-                        <form id="create-animal-form">
-                            <div class="form-row">
-                                <label class="form-label">Nazwa</label>
-                                <input type="text" name="name" class="form-input" required>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">Gatunek</label>
-                                <select name="species" class="form-input" required>
-                                    <option value="">Wybierz gatunek</option>
-                                    <option value="Pies">Pies</option>
-                                    <option value="Kot">Kot</option>
-                                    <option value="Królik">Królik</option>
-                                </select>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">Data przybycia</label>
-                                <input type="date" name="arrival_date" class="form-input" required>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">Numer boksu</label>
-                                <input type="number" name="loosebox" class="form-input" min="1" required>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">Opis</label>
-                                <textarea name="description" class="form-input" required></textarea>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">Płeć</label>
-                                <select name="sex" class="form-input" required>
-                                    <option value="">Wybierz płeć</option>
-                                    <option value="samiec">Samiec</option>
-                                    <option value="samica">Samica</option>
-                                </select>
-                            </div>
-                            <div class="form-row">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-input" required>
-                                    <option value="kwarantanna">Kwarantanna</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="submit-btn">Dodaj zwierzę</button>
-                        </form>
-                    </div>
-                    <div class="table-container">
-                        <table id="animalsTable">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Nazwa</th>
-                                    <th>Gatunek</th>
-                                    <th>Data adopcji</th>
-                                    <th>Data przybycia</th>
-                                    <th>Numer boksu</th>
-                                    <th>Opis</th>
-                                    <th>Płeć</th>
-                                    <th>Status</th>
-                                    <th>Edytuj</th>
-                                    <th>Usuń</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </main>
+               <?php include_once("../backend/pageloading.php"); ?>
             </div>
         </div>
     </div>

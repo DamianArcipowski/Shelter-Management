@@ -10,6 +10,18 @@ const createAnimalBtn = document.getElementById('create-animal-btn');
 const createAnimalFormWrapper = document.querySelector('.form-content');
 const tableContainer = document.querySelector('.table-container');
 const createAnimalForm = document.getElementById('create-animal-form');
+const addTaskBtn = document.getElementById('create-tasks-btn');
+const showTasksBtn = document.getElementById('show-tasks-btn');
+const formWrapper = document.getElementById('form-wrapper-schedule');
+const tableWrapper = document.getElementById('table-wrapper-schedule');
+const addWrapper = document.getElementById('add-wrapper-schedule');
+const addSchdeuleBtn = document.getElementById('add-schedule-btn');
+const candidatesDiv = document.getElementById('candidates');
+const adoptionDiv = document.getElementById('adoption_tickets');
+const contractsDiv = document.getElementById('contracts');
+const buttons = document.querySelectorAll('.sidebar-btn');
+const views = document.querySelectorAll('.view');
+
 
 logoutBtn.addEventListener('click', () => {
     window.location.href = '../backend/logout.php';
@@ -175,6 +187,329 @@ function attachUpdateDeleteEventListeners() {
         });
     });
 }
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'create-task-btn') {
+        formWrapper.classList.remove('hidden');
+        addWrapper.classList.add('hidden');
+        tableWrapper.classList.add('hidden');
+        loadEmployeesIntoSelect();
+    }
+    if (e.target && e.target.id === 'show-tasks-btn') {
+        readTasks();
+        formWrapper.classList.add('hidden');
+        addWrapper.classList.add('hidden');
+        tableWrapper.classList.remove('hidden');
+    }
+    if (e.target && e.target.id === 'add-schedule-btn') {
+        formWrapper.classList.add('hidden');
+        addWrapper.classList.remove('hidden');
+        tableWrapper.classList.add('hidden');
+    }
+ 
+    const btn = e.target.closest('.sidebar-btn');
+    if (!btn) return;
+    const targetId = btn.dataset.target;
+    views.forEach(view => view.classList.add('hidden'));
+    document.getElementById(targetId)?.classList.remove('hidden');
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (e.target?.id === 'add-adoption_tickets-btn') loadCandidatesIntoSelect();
+    if (e.target?.id === 'adoption_tickets-btn') renderTicketsTable();
+    
+});
+
+function renderTicketsTable(){
+    const ticketsTable = document.getElementById('tickets_body');
+    return fetch('../backend/tickets_crud.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=read'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            ticketsTable.innerHTML = data.data.map(ticket => `
+                <tr>
+                    <td>${ticket.id}</td>
+                    <td>${ticket.creation_date}</td>
+                    <td>${ticket.animal_preferences}</td>
+                    <td>${ticket.status}</td>
+                    <td>${ticket.first_name}</td>
+                    <td>${ticket.surname}</td>
+                    <td>${ticket.animal_id ?? 'Brak'}</td>
+                    <td><i class="bi bi-pencil" data-id="${ticket.id}"></i></td>
+                    <td>
+                        <button class="delete-btn" data-id="${ticket.id}">Usuń</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            ticketsTable.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteTicket(btn.dataset.id));
+            });
+        }
+    })
+    .catch(error => console.error('Błąd:', error));
+}
+
+function deleteTicket(id){
+
+}
+
+function readTasks() {
+    const scheduleTable = document.getElementById('scheduleTable');
+    return fetch('../backend/schedule_crud.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=read_tasks'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            scheduleTable.innerHTML = data.data.map(task => `
+                <tr>
+                    <td>${task.id}</td>
+                    <td>${task.first_name}</td>
+                    <td>${task.surname}</td>
+                    <td>${task.position}</td>
+                    <td>${task.date}</td>
+                    <td>${task.opis}</td>
+                    <td>
+                        <button class="delete-btn" data-id="${task.id}">Usuń</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            scheduleTable.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => deleteTask(btn.dataset.id));
+            });
+        }
+    })
+    .catch(error => console.error('Błąd:', error));
+}
+
+function deleteTask(id) {
+    if (!confirm('Czy na pewno chcesz usunąć to zadanie?')) return;
+
+    fetch('../backend/schedule_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=delete_task&id=${id}`
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.success) {
+            readTasks();
+            if (successMessage) {
+                successMessage.textContent = `Pomyślnie usunięto zadanie o ID: ${id}`;
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 5000);
+            }
+        } else {
+            alert('Nie udało się usunąć zadania: ' + (result.message || ''));
+        }
+    })
+    .catch(err => console.error('Błąd usuwania zadania', err));
+}
+
+document.addEventListener('submit', function(e) {
+    if (e.target && e.target.id === 'add-schedule-form') {
+        e.preventDefault();
+        createSchedule(e);
+    }
+     if (e.target && e.target.id === 'create-task-form') {
+        e.preventDefault();
+        addTask(e);
+    }
+     if (e.target && e.target.id === 'add-candidate-form') {
+        e.preventDefault();
+        addCandidate(e);
+    }
+      if (e.target && e.target.id === 'add-ticket-form') {
+        e.preventDefault();
+        addTicket(e);
+    }
+
+});
+
+function addTicket(e){
+         e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    console.log([...formData.entries()]);
+    fetch('../backend/tickets_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=add&${new URLSearchParams(data).toString()}`
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            if(successMessage){
+                successMessage.textContent = result.message;
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 5000);
+            } else {
+                alert(result.message);
+            }
+            e.target.reset();
+        } else {
+            alert('Błąd: ' + (result.message || 'Nie udało się dodać zgłoszenia'));
+        }
+    })
+    .catch(error => {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd podczas dodawania zgłoszenia');
+    }); 
+}
+
+function addCandidate(e){
+      e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    console.log([...formData.entries()]);
+    fetch('../backend/candidates_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=add&${new URLSearchParams(data).toString()}`
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            if(successMessage){
+                successMessage.textContent = result.message;
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 5000);
+            } else {
+                alert(result.message);
+            }
+            e.target.reset();
+        } else {
+            alert('Błąd: ' + (result.message || 'Nie udało się dodać kandydata'));
+        }
+    })
+    .catch(error => {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd podczas dodawania kandydata');
+    }); 
+}
+
+function addTask(e){
+     e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    fetch('../backend/schedule_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=add_task&${new URLSearchParams(data).toString()}`
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            if(successMessage){
+                successMessage.textContent = result.message;
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 5000);
+            } else {
+                alert(result.message);
+            }
+            e.target.reset();
+        } else {
+            alert('Błąd: ' + (result.message || 'Nie udało się dodać zadania'));
+        }
+    })
+    .catch(error => {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd podczas dodawania zadania');
+    });
+}
+
+function loadEmployeesIntoSelect() {
+    const employeeSelect = document.getElementById('employee-select');
+    if (!employeeSelect) return;
+
+    fetch('../backend/employees_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'action=read'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            employeeSelect.innerHTML = '';
+            data.data.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = emp.first_name + ' ' + emp.surname + ' ' +emp.position;
+                employeeSelect.appendChild(option);
+            });
+        }
+    })
+    .catch(err => console.error('Błąd pobierania pracowników', err));
+}
+function loadCandidatesIntoSelect() {
+    const candidates = document.getElementById('candidate_id');
+    if (!candidates) return;
+
+    fetch('../backend/candidates_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'action=loadSelect'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            candidates.innerHTML = '';
+            data.data.forEach(can => {
+                const option = document.createElement('option');
+                option.value = can.id;
+                option.textContent = can.first_name + ' ' + can.surname;
+                candidates.appendChild(option);
+            });
+        }
+    })
+    .catch(err => console.error('Błąd pobierania knadydatów', err));
+}
+function createSchedule(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    fetch('../backend/schedule_crud.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `action=add_schedule&${new URLSearchParams(data).toString()}`
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            if(successMessage){
+                successMessage.textContent = result.message;
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 5000);
+            } else {
+                alert(result.message);
+            }
+            e.target.reset();
+        } else {
+            alert('Błąd: ' + (result.message || 'Nie udało się dodać planu'));
+        }
+    })
+    .catch(error => {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd podczas dodawania planu');
+    });
+}
+
 
 speciesFilter.addEventListener('change', filterBySpecies);
 searchIdBtn.addEventListener('click', searchById);

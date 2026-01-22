@@ -7,4 +7,6 @@ VALUES ('Bela', 'Królik', NULL, '2026-01-02', 1, 'Królik z raną lewego ucha, 
 
 --password for Jan Kowalski: secret1!
 INSERT INTO employees (first_name, surname, hire_date, password, login, position) 
-VALUES ('Jan', 'Kowalski', '2026-01-17', '$2y$10$MxLkTp4C38Ie8zCkiNsoX.ZbtyDETWFta7yhG02GH7Kd/X4Rj6uhC', 'jkowalski', 'pracownik_biurowy');
+VALUES ('Jan', 'Kowalski', '2026-01-17', '$2y$10$MxLkTp4C38Ie8zCkiNsoX.ZbtyDETWFta7yhG02GH7Kd/X4Rj6uhC', 'jkowalski', 'pracownik_biurowy'),
+('Adam', 'Mickiewicz', '2022-01-17', '$2y$10$MxLkTp4C38Ie8zCkiNsoX.ZbtyDETWFta7yhG02GH7Kd/X4Rj6uhC', 'amickiewicz', 'magazynier'),
+('Stefan', 'Rogowski', '2020-01-17', '$2y$10$MxLkTp4C38Ie8zCkiNsoX.ZbtyDETWFta7yhG02GH7Kd/X4Rj6uhC', 'srogowski', 'weterynarz');
