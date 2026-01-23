@@ -7,7 +7,7 @@ const searchNameBtn = document.getElementById('search-name-btn');
 const searchIdBtn = document.getElementById('search-id-btn');
 const successMessage = document.querySelector('.success-notification');
 const createAnimalBtn = document.getElementById('create-animal-btn');
-const createAnimalFormWrapper = document.querySelector('.form-content');
+const createAnimalFormWrapper = document.querySelector('[data-form="create"]');
 const tableContainer = document.querySelector('.table-container');
 const createAnimalForm = document.getElementById('create-animal-form');
 const addTaskBtn = document.getElementById('create-tasks-btn');
@@ -21,7 +21,9 @@ const adoptionDiv = document.getElementById('adoption_tickets');
 const contractsDiv = document.getElementById('contracts');
 const buttons = document.querySelectorAll('.sidebar-btn');
 const views = document.querySelectorAll('.view');
-
+const updateAnimalFormWrapper = document.querySelector('[data-form="update"]');
+const updateAnimalForm = document.getElementById('update-animal-form');
+const returnBtn = document.querySelector('.return-btn');
 
 logoutBtn.addEventListener('click', () => {
     window.location.href = '../backend/logout.php';
@@ -133,6 +135,42 @@ function createAnimal(e) {
     });
 }
 
+function updateAnimal(e) {
+    e.preventDefault();
+            
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    fetch('../backend/animals_crud.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=update&${new URLSearchParams(data).toString()}`
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            successMessage.textContent = 'Pomyślnie edytowano zwierzę!';
+            successMessage.style.display = 'block';
+            
+            updateAnimalFormWrapper.classList.add('hidden');
+            tableContainer.classList.remove('hidden');
+            displayAnimals();
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        } else {
+            alert('Błąd: ' + (result.message || 'Nie udało się edytować zwierzęcia'));
+        }
+    })
+    .catch(error => {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd podczas edycji zwierzęcia');
+    });
+}
+
 function filterBySpecies() {
     const selectedValue = speciesFilter.value;
     if (!selectedValue) {
@@ -173,7 +211,41 @@ function attachUpdateDeleteEventListeners() {
         icon.addEventListener('click', e => {
             const iconElement = e.target.closest('.bi.bi-pencil');
             const id = iconElement.dataset.id;
-            /* Update logic todo */
+            tableContainer.classList.add('hidden');
+            updateAnimalFormWrapper.classList.remove('hidden');
+
+            fetch('../backend/form_autofill.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${id}`
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    let inputId = document.createElement('input');
+                    inputId.type = 'text';
+                    inputId.name = 'id';
+                    inputId.value = id;
+                    inputId.style.display = 'none';
+                    updateAnimalForm.appendChild(inputId);
+
+                    updateAnimalForm.querySelector('[name="name"]').value = result.data.name;
+                    updateAnimalForm.querySelector('[name="species"]').value = result.data.species;
+                    updateAnimalForm.querySelector('[name="arrival_date"]').value = result.data.arrival_date;
+                    updateAnimalForm.querySelector('[name="loosebox"]').value = result.data.loosebox;
+                    updateAnimalForm.querySelector('[name="description"]').value = result.data.description;
+                    updateAnimalForm.querySelector('[name="sex"]').value = result.data.sex;
+                    updateAnimalForm.querySelector('[name="status"]').value = result.data.status;
+                } else {
+                    alert('Błąd: ' + (result.message || 'Nie udało się pobrać danych zwierzęcia'));
+                }
+            })
+            .catch(error => {
+                console.error('Błąd:', error);
+                alert('Wystąpił błąd podczas wypełniania formularza edycji zwierzęcia');
+            });
         });
     });
 
@@ -337,11 +409,10 @@ document.addEventListener('submit', function(e) {
 });
 
 function addTicket(e){
-         e.preventDefault();
+    e.preventDefault();
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
-    console.log([...formData.entries()]);
     fetch('../backend/tickets_crud.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -373,7 +444,6 @@ function addCandidate(e){
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
-    console.log([...formData.entries()]);
     fetch('../backend/candidates_crud.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -510,10 +580,15 @@ function createSchedule(e) {
     });
 }
 
+returnBtn.addEventListener('click', () => {
+    updateAnimalFormWrapper.classList.add('hidden');
+    tableContainer.classList.remove('hidden');
+});
 
 speciesFilter.addEventListener('change', filterBySpecies);
 searchIdBtn.addEventListener('click', searchById);
 searchNameBtn.addEventListener('click', searchByName);
 createAnimalBtn.addEventListener('click', showCreateAnimalForm);
 createAnimalForm.addEventListener('submit', e => createAnimal(e));
+updateAnimalForm.addEventListener('submit', e => updateAnimal(e));
 document.addEventListener('DOMContentLoaded', displayAnimals);

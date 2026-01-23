@@ -31,7 +31,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
             
         case 'update':
-            //Update logic todo
+            $id = $_POST['id'] ?? 0;
+            $name = $_POST['name'] ?? '';
+            $species = $_POST['species'] ?? '';
+            $adoption_date = $_POST['adoption_date'] ?? '';
+            $arrival_date = $_POST['arrival_date'] ?? '';
+            $loosebox = $_POST['loosebox'] ?? 0;
+            $description = $_POST['description'] ?? '';
+            $sex = $_POST['sex'] ?? '';
+            $status = $_POST['status'] ?? '';
+
+            if ($adoption_date == '') $adoption_date = NULL;
+            
+            $sql = 'UPDATE animals SET name = ?, species = ?, adoption_date = ?, arrival_date = ?, loosebox = ?, 
+                    description = ?, sex = ?, status = ? WHERE id = ?';
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('ssssisssi', $name, $species, $adoption_date, $arrival_date, $loosebox, $description, $sex, $status, $id);
+            $stmt->execute();
+            $stmt->close();
             echo json_encode(['success' => true, 'message' => 'Zaktualizowano']);
             break;
             
