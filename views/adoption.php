@@ -10,7 +10,24 @@
                 </aside>
                 <main>
                    <div id="candidates" class="view hidden">
-        
+                        <div class="table-container">
+                            <table id="ticketsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Data</th>
+                                        <th>Opis</th>
+                                        <th>Status</th>
+                                        <th>Imie</th>
+                                        <th>Nazwisko</th>
+                                        <th>Zwierze</th>
+                                        <th>Edytuj</th>
+                                        <th>Usun</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="candidates_body"></tbody>
+                            </table>
+                        </div>
                    </div>
                    <div id="add-candidate" class="view hidden">
                         <div class="form-content">

@@ -8,11 +8,12 @@ body {
     font-family: Verdana, sans-serif;
     background: #2d2d2d;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
-    background: #fff;
-    border: 3px solid #333;
+    background: linear-gradient(135deg, #e8f5d0 0%, #d4f084 100%);
     overflow-x: hidden;
     height: 100vh;
 }
@@ -197,8 +198,6 @@ thead, tbody, td, th {
     padding: 10px;
     border-top: 3px solid #333;
     text-align: center;
-    position: fixed;
-    bottom: 0;
     width: 100%;
 }
 
@@ -273,7 +272,7 @@ select.form-input {
     font-size: 16px;
     cursor: pointer;
     float: right;
-    margin: 50px 20px 0 0;
+    margin: 50px 10px 20px 10px;
     transition: background 0.3s;
 }
 

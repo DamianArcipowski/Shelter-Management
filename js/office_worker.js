@@ -24,6 +24,7 @@ const views = document.querySelectorAll('.view');
 const updateAnimalFormWrapper = document.querySelector('[data-form="update"]');
 const updateAnimalForm = document.getElementById('update-animal-form');
 const returnBtn = document.querySelector('.return-btn');
+const contractsBtn = document.getElementById('contracts-btn');
 
 logoutBtn.addEventListener('click', () => {
     window.location.href = '../backend/logout.php';
@@ -214,6 +215,11 @@ function attachUpdateDeleteEventListeners() {
             tableContainer.classList.add('hidden');
             updateAnimalFormWrapper.classList.remove('hidden');
 
+            returnBtn.addEventListener('click', () => {
+                updateAnimalFormWrapper.classList.add('hidden');
+                tableContainer.classList.remove('hidden');
+            });
+
             fetch('../backend/form_autofill.php', {
                 method: 'POST',
                 headers: {
@@ -285,8 +291,9 @@ document.addEventListener('click', function(e) {
     document.getElementById(targetId)?.classList.remove('hidden');
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    if (e.target?.id === 'add-adoption_tickets-btn') loadCandidatesIntoSelect();
-    if (e.target?.id === 'adoption_tickets-btn') renderTicketsTable();
+    if (e.target?.id == 'add-adoption_tickets-btn') loadCandidatesIntoSelect();
+    if (e.target?.id == 'adoption_tickets-btn') renderTicketsTable();
+    if (e.target?.id == 'form-adoption-btn') renderCandidatesTable();
     
 });
 
@@ -321,6 +328,42 @@ function renderTicketsTable(){
             ticketsTable.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', () => deleteTicket(btn.dataset.id));
             });
+        }
+    })
+    .catch(error => console.error('Błąd:', error));
+}
+
+function renderCandidatesTable(){
+    const candidatesTable = document.getElementById('candidates_body');
+    return fetch('../backend/candidates_crud.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'action=loadSelect'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            candidatesTable.innerHTML = data.data.map(candidate => `
+                <tr>
+                    <td>${candidate.first_name}</td>
+                    <td>${candidate.surname}</td>
+                    <td>${candidate.address}</td>
+                    <td>${candidate.email}</td>
+                    <td>${candidate.phone_number}</td>
+                    <td>${candidate.house_conditions}</td>
+                    <td>${candidate.sex}</td>
+                    <td><i class="bi bi-pencil" data-id="${candidate.id}"></i></td>
+                    <td>
+                        <button class="delete-btn" data-id="${candidate.id}">Usuń</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            //ticketsTable.querySelectorAll('.delete-btn').forEach(btn => {
+            //    btn.addEventListener('click', () => deleteTicket(btn.dataset.id));
+            //});
         }
     })
     .catch(error => console.error('Błąd:', error));
@@ -537,6 +580,7 @@ function loadCandidatesIntoSelect() {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+            console.log(data)
             candidates.innerHTML = '';
             data.data.forEach(can => {
                 const option = document.createElement('option');
@@ -580,11 +624,8 @@ function createSchedule(e) {
     });
 }
 
-returnBtn.addEventListener('click', () => {
-    updateAnimalFormWrapper.classList.add('hidden');
-    tableContainer.classList.remove('hidden');
-});
 
+contractsBtn.addEventListener('click', () => alert('Strona w budowie!'));
 speciesFilter.addEventListener('change', filterBySpecies);
 searchIdBtn.addEventListener('click', searchById);
 searchNameBtn.addEventListener('click', searchByName);

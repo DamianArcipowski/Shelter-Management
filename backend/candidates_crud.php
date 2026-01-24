@@ -20,18 +20,17 @@ switch($action){
         else echo json_encode(['success' => false, 'message' => 'Błąd bazy danych']);
         break;
     case 'loadSelect':
-        $stmt = $conn->prepare("SELECT id,first_name, surname FROM adoption_candidates");
+        $stmt = $conn->prepare("SELECT * FROM adoption_candidates");
         $stmt->execute();
         $result = $stmt->get_result();
         $candidates = [];
         while ($row = $result->fetch_assoc()) {
-        $candidates[] = $row;
-         }
+            $candidates[] = $row;
+        }
         echo json_encode(['success' => true, 'data' => $candidates]);
         break;
         
     }
-   
 
     $conn->close();
     exit();
