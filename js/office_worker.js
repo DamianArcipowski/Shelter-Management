@@ -24,7 +24,7 @@ const views = document.querySelectorAll('.view');
 const updateAnimalFormWrapper = document.querySelector('[data-form="update"]');
 const updateAnimalForm = document.getElementById('update-animal-form');
 const returnBtn = document.querySelector('.return-btn');
-const contractsBtn = document.getElementById('contracts-btn');
+
 
 logoutBtn.addEventListener('click', () => {
     window.location.href = '../backend/logout.php';
@@ -294,6 +294,9 @@ document.addEventListener('click', function(e) {
     if (e.target?.id == 'add-adoption_tickets-btn') loadCandidatesIntoSelect();
     if (e.target?.id == 'adoption_tickets-btn') renderTicketsTable();
     if (e.target?.id == 'form-adoption-btn') renderCandidatesTable();
+
+    const contractsBtn = document.getElementById('contracts-btn');
+    contractsBtn.addEventListener('click', () => alert('Strona w budowie!'));
     
 });
 
@@ -625,7 +628,7 @@ function createSchedule(e) {
 }
 
 
-contractsBtn.addEventListener('click', () => alert('Strona w budowie!'));
+
 speciesFilter.addEventListener('change', filterBySpecies);
 searchIdBtn.addEventListener('click', searchById);
 searchNameBtn.addEventListener('click', searchByName);
