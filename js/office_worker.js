@@ -294,9 +294,8 @@ document.addEventListener('click', function(e) {
     if (e.target?.id == 'add-adoption_tickets-btn') loadCandidatesIntoSelect();
     if (e.target?.id == 'adoption_tickets-btn') renderTicketsTable();
     if (e.target?.id == 'form-adoption-btn') renderCandidatesTable();
+    if (e.target?.id == 'contracts-btn') alert('Strona w budowie!')
 
-    const contractsBtn = document.getElementById('contracts-btn');
-    contractsBtn.addEventListener('click', () => alert('Strona w budowie!'));
     
 });
 
