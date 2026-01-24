@@ -1,5 +1,3 @@
-
-
 SET NAMES 'utf8mb4';
 
 CREATE DATABASE IF NOT EXISTS shelter
@@ -12,9 +10,3 @@ GRANT ALL PRIVILEGES ON shelter.* TO 'admin'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 USE shelter;
-
-SOURCE adoptions.sql;
-SOURCE animals.sql;
-SOURCE schedule.sql;
-SOURCE warehouse.sql;
-SOURCE insert_data.sql;

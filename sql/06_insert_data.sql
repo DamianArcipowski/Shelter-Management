@@ -1,3 +1,6 @@
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 INSERT INTO animals (name, species, adoption_date, arrival_date, loosebox, description, sex, status)
 VALUES ('Burek', 'Pies', NULL, '2026-01-13', 3, 'Kundel o brązowym umaszczeniu, bardzo przyjaźnie usposobiony', 'samiec', 'kwarantanna'),
 ('Mruczek', 'Kot', NULL, '2026-01-10', 5, 'Kot o czarnym futrze z białą plamką przy nosie, krępej postury', 'samiec', 'kwarantanna'),
